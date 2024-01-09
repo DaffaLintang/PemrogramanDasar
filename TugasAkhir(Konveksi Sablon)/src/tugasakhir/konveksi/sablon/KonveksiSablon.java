@@ -31,6 +31,7 @@ String Tanggal;
 private DefaultTableModel model;
 private DefaultTableModel modelCst;
 private DefaultTableModel modelKasir;
+private DefaultTableModel modelPSA;
 
 private void autoNumberBarang() {   
     try{
@@ -132,6 +133,36 @@ public void loadDataBarang(){
         s.close();
     }catch(Exception e){
         System.out.println("load data error");
+    }
+}
+
+public void loadDataPSA(){
+    modelPSA.getDataVector().removeAllElements();
+    modelPSA.fireTableDataChanged();
+    
+    try{
+        Connection c = koneksi.getKoneksi();
+        java.sql.Statement s = c.createStatement();
+        
+        String sql = "SELECT * FROM psa";
+        ResultSet r = s.executeQuery(sql);
+        
+        while(r.next()){
+            Object[] obj = new Object[8];
+            obj [0] = r.getString("No_Transaksi");
+            obj [1] = r.getString("Nama_Customer");
+            obj [2] = r.getString("No_HP");
+            obj [3] = r.getString("Kode_Barang");
+            obj [4] = r.getString("Jumlah");
+            obj [5] = r.getString("Deadline");
+            obj [6] = r.getString("Status");
+            obj [7] = r.getString("Last_Update");            
+            modelPSA.addRow(obj);
+        }
+        r.close();
+        s.close();
+    }catch(Exception e){
+        System.out.println(e);
     }
 }
 
@@ -320,13 +351,16 @@ public void tambahTransaksi(){
         initComponents();
         this.setLocationRelativeTo(null);
         
+        modelPSA = new DefaultTableModel();
         modelKasir = new DefaultTableModel();
         model = new DefaultTableModel();
         modelCst = new DefaultTableModel();
         
+        
         tabelInputBarang.setModel(model);
         tabelCustomer.setModel(modelCst);
         jTabel1.setModel(modelKasir);
+        tabelPSA.setModel(modelPSA);
         
         //Kasir
         modelKasir.addColumn("No_Transaksi");
@@ -348,8 +382,18 @@ public void tambahTransaksi(){
         txKembalian.setText("0");
         txNamaCustomer.requestFocus();
         
-       
-        
+       //PSA
+      modelPSA.addColumn("No Transaksi");
+      modelPSA.addColumn("Nama");
+      modelPSA.addColumn("No HP");
+      modelPSA.addColumn("Kode Barang");
+      modelPSA.addColumn("Jumlah");
+      modelPSA.addColumn("Deadline");
+      modelPSA.addColumn("Status");
+      modelPSA.addColumn("Last Updated"); 
+      modelPSA.addColumn("Edit");  
+      loadDataPSA();
+     
         
         //InputBarang
         model.addColumn("Kode_Barang");
@@ -419,12 +463,12 @@ public void tambahTransaksi(){
         txHarga = new RoundedJTextField(15);
         jLabel16 = new javax.swing.JLabel();
         txJumlah = new RoundedJTextField(15);
-        jPanel3 = new javax.swing.JPanel();
+        PSA = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        tabelPSA = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -583,7 +627,7 @@ public void tambahTransaksi(){
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Kasir");
 
-        jPanel3.setOpaque(false);
+        PSA.setOpaque(false);
         jPanel7.setBackground(new java.awt.Color(37, 37, 37));
         jPanel7.setForeground(new java.awt.Color(37, 37, 37));
 
@@ -635,7 +679,7 @@ public void tambahTransaksi(){
                     .addComponent(txNamaCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel9)
@@ -775,7 +819,7 @@ public void tambahTransaksi(){
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(357, 357, 357)
-                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addGap(388, 388, 388))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
@@ -882,18 +926,17 @@ public void tambahTransaksi(){
         jScrollPane4.setBackground(new java.awt.Color(37, 37, 37));
         jScrollPane4.setForeground(new java.awt.Color(37, 37, 37));
 
-        jTable4.setBackground(new java.awt.Color(37, 37, 37));
-        jTable4.setForeground(new java.awt.Color(37, 37, 37));
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        tabelPSA.setForeground(new java.awt.Color(37, 37, 37));
+        tabelPSA.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No Transaksi", "txtNamaCustomer ", "No HP", "Kode Barang", "Jumlah", "Deadline", "Status", "Last Update", "Edit"
+                "No Transaksi", "Nama", "No HP", "Kode Barang", "Jumlah", "Deadline", "Status", "Last Updated", "Edit"
             }
         ));
-        jTable4.setSelectionForeground(new java.awt.Color(37, 37, 37));
-        jScrollPane4.setViewportView(jTable4);
+        tabelPSA.setSelectionForeground(new java.awt.Color(37, 37, 37));
+        jScrollPane4.setViewportView(tabelPSA);
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -939,18 +982,18 @@ public void tambahTransaksi(){
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout PSALayout = new javax.swing.GroupLayout(PSA);
+        PSA.setLayout(PSALayout);
+        PSALayout.setHorizontalGroup(
+            PSALayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        PSALayout.setVerticalGroup(
+            PSALayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("tab2", jPanel3);
+        jTabbedPane1.addTab("tab2", PSA);
 
         jPanel4.setBackground(new java.awt.Color(17, 17, 17));
         jPanel4.setForeground(new java.awt.Color(17, 17, 17));
@@ -1003,7 +1046,7 @@ public void tambahTransaksi(){
         jPanel8.setBackground(new java.awt.Color(17, 17, 17));
         jPanel8.setForeground(new java.awt.Color(17, 17, 17));
 
-        jPanel3.setOpaque(false);
+        PSA.setOpaque(false);
         jPanel10.setBackground(new java.awt.Color(37, 37, 37));
         jPanel10.setForeground(new java.awt.Color(37, 37, 37));
 
@@ -1240,7 +1283,7 @@ public void tambahTransaksi(){
         jLabel29.setForeground(new java.awt.Color(255, 255, 255));
         jLabel29.setText("Input Customer");
 
-        jPanel3.setOpaque(false);
+        PSA.setOpaque(false);
         jPanel9.setBackground(new java.awt.Color(37, 37, 37));
         jPanel9.setForeground(new java.awt.Color(37, 37, 37));
 
@@ -1783,6 +1826,7 @@ public void tambahTransaksi(){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PSA;
     private javax.swing.JButton btnHapus;
     private javax.swing.JButton btnHapusCustomer;
     private javax.swing.JButton btnSimpan;
@@ -1831,7 +1875,6 @@ public void tambahTransaksi(){
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -1846,9 +1889,9 @@ public void tambahTransaksi(){
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTabel1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable4;
     private javax.swing.JTable tabelCustomer;
     private javax.swing.JTable tabelInputBarang;
+    private javax.swing.JTable tabelPSA;
     private javax.swing.JTextField txBayar;
     private javax.swing.JTextField txDeadline;
     private javax.swing.JTextField txHarga;
